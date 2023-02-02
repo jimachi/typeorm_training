@@ -11,7 +11,7 @@
    "dependencies": {
       "typeorm": "0.3.11",
       "reflect-metadata": "^0.1.13",
-      "mysql": "^2.14.1"
+      "pg": "^8.4.0"
    },
    "scripts": {
       "start": "ts-node src/index.ts",
