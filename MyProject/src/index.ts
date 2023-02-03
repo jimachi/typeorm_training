@@ -1,5 +1,6 @@
 import { AppDataSource } from "./data-source";
 import { Photo } from "./entity/Photo";
+import { PhotoMetadata } from './entity/PhotoMetadata';
 
 AppDataSource.initialize()
     .then(async () => {
@@ -10,53 +11,20 @@ AppDataSource.initialize()
         photo.views = 1;
         photo.isPublished = true;
 
-        const savedPhotos = await AppDataSource.manager.find(Photo);
-        console.log("All photos from the db: ", savedPhotos);
+        const metadata = new PhotoMetadata();
+        metadata.height = 640
+        metadata.width = 480
+        metadata.compressed = true
+        metadata.comment = "cyberShoot"
+        metadata.orientation = "portrait"
+        metadata.photo = photo
 
-        const photoRepository = await AppDataSource.getRepository(Photo);
+        const photoRepository = AppDataSource.getRepository(Photo)
+        const metadataRepository = AppDataSource.getRepository(PhotoMetadata)
 
-        // await photoRepository.save(photo);
-        // console.log("Photo has been saved");
+        await photoRepository.save(photo)
+        await metadataRepository.save(metadata)
 
-        const allPhotos = await photoRepository.find();
-        console.log(`All photos from the db: ${allPhotos}`);
-
-        const firstPhoto = await photoRepository.findOneBy({
-            id: 1,
-        });
-        console.log(`First photo from the db: ${firstPhoto}`);
-
-        const meAndBearsPhoto = await photoRepository.findOneBy({
-            name: "Me and Bears",
-        });
-        console.log(`Me and Bears photo from the db: ${meAndBearsPhoto}`);
-
-        const allViewedPhotos = await photoRepository.findBy({ views: 1 });
-        console.log(`All viewed photos: ${allViewedPhotos}`);
-
-        const allPublishedPhotos = await photoRepository.findBy({
-            isPublished: true,
-        });
-        console.log(`All published photos: ${allPublishedPhotos}`);
-
-        const [photos, photosCount] = await photoRepository.findAndCount();
-        console.log(`All photos: ${photo}`);
-        console.log(`Photos count: ${photosCount}`);
-
-        const savedPhoto = await AppDataSource.manager.find(Photo);
-        console.log(`All photos from the db: ${savedPhoto}`);
-
-        const photoToUpdate = await photoRepository.findOneBy({
-          id: 1,
-        })
-        photoToUpdate.name = "Me, my friends and polar bears"
-        await photoRepository.save(photoToUpdate)
-
-        const photoToRemove = await photoRepository.findOneBy({
-          id: 4,
-        })
-        if (photoToRemove) {
-          await photoRepository.remove(photoToRemove)
-        }
+        console.log("Metadata is saved, and the relation between metadata and photo is created in the database too");
     })
     .catch((error) => console.log(error));
