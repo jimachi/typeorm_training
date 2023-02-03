@@ -1,6 +1,6 @@
 import { AppDataSource } from "./data-source";
 import { Photo } from "./entity/Photo";
-import { PhotoMetadata } from './entity/PhotoMetadata';
+import { PhotoMetadata } from "./entity/PhotoMetadata";
 
 AppDataSource.initialize()
     .then(async () => {
@@ -12,19 +12,27 @@ AppDataSource.initialize()
         photo.isPublished = true;
 
         const metadata = new PhotoMetadata();
-        metadata.height = 640
-        metadata.width = 480
-        metadata.compressed = true
-        metadata.comment = "cyberShoot"
-        metadata.orientation = "portrait"
-        metadata.photo = photo
+        metadata.height = 640;
+        metadata.width = 480;
+        metadata.compressed = true;
+        metadata.comment = "cyberShoot";
+        metadata.orientation = "portrait";
+        metadata.photo = photo;
 
-        const photoRepository = AppDataSource.getRepository(Photo)
-        const metadataRepository = AppDataSource.getRepository(PhotoMetadata)
+        photo.metadata = metadata;
 
-        await photoRepository.save(photo)
-        await metadataRepository.save(metadata)
+        const photoRepository = AppDataSource.getRepository(Photo);
+        const metadataRepository = AppDataSource.getRepository(PhotoMetadata);
 
-        console.log("Metadata is saved, and the relation between metadata and photo is created in the database too");
+        await photoRepository.save(photo);
+        // await metadataRepository.save(metadata)
+        // console.log("Metadata is saved, and the relation between metadata and photo is created in the database too");
+
+        const photos = await photoRepository.find({
+            relations: {
+                metadata: true,
+            },
+        });
+        console.log(photos);
     })
     .catch((error) => console.log(error));
