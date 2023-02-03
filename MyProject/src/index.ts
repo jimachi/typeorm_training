@@ -15,9 +15,9 @@ AppDataSource.initialize()
 
         const photoRepository = await AppDataSource.getRepository(Photo);
 
-        await photoRepository.save(photo);
-        console.log("Photo has been saved");
-        
+        // await photoRepository.save(photo);
+        // console.log("Photo has been saved");
+
         const allPhotos = await photoRepository.find();
         console.log(`All photos from the db: ${allPhotos}`);
 
@@ -45,5 +45,18 @@ AppDataSource.initialize()
 
         const savedPhoto = await AppDataSource.manager.find(Photo);
         console.log(`All photos from the db: ${savedPhoto}`);
+
+        const photoToUpdate = await photoRepository.findOneBy({
+          id: 1,
+        })
+        photoToUpdate.name = "Me, my friends and polar bears"
+        await photoRepository.save(photoToUpdate)
+
+        const photoToRemove = await photoRepository.findOneBy({
+          id: 4,
+        })
+        if (photoToRemove) {
+          await photoRepository.remove(photoToRemove)
+        }
     })
     .catch((error) => console.log(error));
