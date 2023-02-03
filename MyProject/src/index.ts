@@ -24,7 +24,7 @@ AppDataSource.initialize()
         const photoRepository = AppDataSource.getRepository(Photo);
         const metadataRepository = AppDataSource.getRepository(PhotoMetadata);
 
-        await photoRepository.save(photo);
+        // await photoRepository.save(photo);
         // await metadataRepository.save(metadata)
         // console.log("Metadata is saved, and the relation between metadata and photo is created in the database too");
 
